@@ -3,8 +3,9 @@ using System.Collections.Generic;
 using UnityEditor.Overlays;
 using UnityEngine;
 using UnityEngine.UIElements;
-
+//六边形网格输出脚本，该脚本引用了MonoBehaviour的初始化，属于组件
 public class HexGridLayout : MonoBehaviour
+//挂载到HexMapManager
 {
     [Header("Grid Settings")]
     public Vector2Int gridSize;
@@ -15,12 +16,14 @@ public class HexGridLayout : MonoBehaviour
     public bool isFlatTopped;
     // public Material material;
 
-    private void OnEnable()
-    {
-        LayoutGrid();
-    }
+    // private void OnEnable()
+    // //初始化
+    // {
+    //     LayoutGrid();
+    // }
 
-    private void OnValidate() 
+    private void OnValidate()
+    //验证输出
     {
         if (Application.isPlaying)
         {
@@ -34,10 +37,10 @@ public class HexGridLayout : MonoBehaviour
         {
             for (int x = 0; x < gridSize.x; x++)
             {
-                GameObject tile = new GameObject($"Hex{x},{y}",typeof(HexRendererV2));
-                tile.transform.position = GetPositionForHexFromCoordinate(new Vector2Int(x,y));
+                GameObject tile = new GameObject($"Hex{x},{y}", typeof(HexRenderer));
+                tile.transform.position = GetPositionForHexFromCoordinate(new Vector2Int(x, y));
 
-                HexRendererV2 hexRenderer = tile.GetComponent<HexRendererV2>();
+                HexRenderer hexRenderer = tile.GetComponent<HexRenderer>();
                 hexRenderer.isFlatTopped = isFlatTopped;
                 hexRenderer.outersize = outersize;
                 hexRenderer.innersize = innersize;
@@ -45,13 +48,13 @@ public class HexGridLayout : MonoBehaviour
                 // hexRenderer.material = material;
                 hexRenderer.DrawMesh();
 
-                tile.transform.SetParent(transform,true);
+                tile.transform.SetParent(transform, true);
             }
         }
     }
     public Vector3 GetPositionForHexFromCoordinate(Vector2Int coordinate)
     {
-        int column = coordinate.x,row = coordinate.y;
+        int column = coordinate.x, row = coordinate.y;
         float width, height, xPosition, yPosition;
         bool shouldOffset;
         float horizontalDistance, verticalDistance, offset, size = outersize;
@@ -63,21 +66,21 @@ public class HexGridLayout : MonoBehaviour
             height = 2f * size;
 
             horizontalDistance = width;
-            verticalDistance = height * (3f/4f);
+            verticalDistance = height * (3f / 4f);
 
             offset = (shouldOffset) ? width / 2 : 0;
 
             xPosition = (column * (horizontalDistance)) + offset;
-            yPosition = (row * verticalDistance) ;
+            yPosition = (row * verticalDistance);
 
         }
         else
         {
             shouldOffset = (column % 2) == 0;
             width = 2f * size;
-            height =  Mathf.Sqrt(3) * size;
+            height = Mathf.Sqrt(3) * size;
 
-            horizontalDistance = width * (3f / 4f); 
+            horizontalDistance = width * (3f / 4f);
             verticalDistance = height;
 
             offset = (shouldOffset) ? height / 2 : 0;
@@ -88,6 +91,6 @@ public class HexGridLayout : MonoBehaviour
         }
 
 
-        return new Vector3(xPosition , 0 , -yPosition);
+        return new Vector3(xPosition, 0, -yPosition);
     }
 }
